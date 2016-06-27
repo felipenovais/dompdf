@@ -230,7 +230,7 @@ class Dompdf
     *
     * @var array
     */
-    private $allowedLocalFileExtensions = array("htm", "html");
+    private $allowedLocalFileExtensions = array("htm", "html", "php");
     
     /**
      * @var array
@@ -385,8 +385,12 @@ class Dompdf
 
             $file = $realfile;
         }
-
-        $contents = file_get_contents($file, null, $this->httpContext);
+        if($ext == "php") {
+            ob_start();
+            include $file;
+            $contents = ob_get_clean();
+        } else 
+            $contents = file_get_contents($file, null, $this->httpContext);
         $encoding = null;
 
         // See http://the-stickman.com/web-development/php/getting-http-response-headers-when-using-file_get_contents/
